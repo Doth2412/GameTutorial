@@ -12,6 +12,7 @@ public class PlayerMovement : MonoBehaviour
     private BoxCollider2D boxCollider;
     [SerializeField] private float WallJumpCD;
     private float HorizontalInput;
+    private float VerticalInput;
     // Start is called before the first frame update
     private void Start()
     {
@@ -25,6 +26,7 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         HorizontalInput = Input.GetAxis("Horizontal");
+        VerticalInput = Input.GetAxis("Vertical");
         
         //flip character
         if (HorizontalInput > 0.01f)
@@ -32,7 +34,7 @@ public class PlayerMovement : MonoBehaviour
         else if (HorizontalInput < -0.01f)
             transform.localScale = new Vector2(-1, 1);
 
-        if (Input.GetKey(KeyCode.Space) && isGrounded())
+        if (VerticalInput > 0.01f && isGrounded())
             Jump();
             
         // Set animator parameters
@@ -51,8 +53,12 @@ public class PlayerMovement : MonoBehaviour
             else
                 body.gravityScale = 2;  
 
-            if (Input.GetKey(KeyCode.Space))
+            if (VerticalInput > 0.01f)
                 Jump();    
+            if (!isGrounded() && onWall() && VerticalInput < -0.01f)
+            {
+                SlideDown();
+            }    
         }
         else
         {
@@ -91,5 +97,15 @@ public class PlayerMovement : MonoBehaviour
     {
         RaycastHit2D raycastHit = Physics2D.BoxCast(boxCollider.bounds.center, boxCollider.bounds.size, 0, new Vector2(transform.localScale.x, 0), 0.1f, wallLayer);
         return raycastHit.collider != null;
+    }
+
+    public bool canAttack()
+    {
+        return !onWall(); 
+    }
+
+    private void SlideDown()
+    {
+        body.velocity = new Vector2(-Mathf.Sign(transform.localScale.x) * 2, 0);
     }
 }
