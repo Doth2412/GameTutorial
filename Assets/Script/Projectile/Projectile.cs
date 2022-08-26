@@ -54,6 +54,7 @@ public class Projectile : MonoBehaviour
 
     public void Disappear()
     {
+        lifetime = 0;
         gameObject.SetActive(false);
     }
 }
