@@ -8,7 +8,7 @@ public class Projectile : MonoBehaviour
     private float direction;
     private BoxCollider2D boxCollider;
     private Animator anime;
-    private float lifetime;
+    public float lifetime;
     // Start is called before the first frame update
     void Awake()
     {
@@ -54,6 +54,7 @@ public class Projectile : MonoBehaviour
 
     public void Disappear()
     {
+        lifetime = 0;
         gameObject.SetActive(false);
     }
 }
